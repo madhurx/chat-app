@@ -14,3 +14,8 @@ server.listen(port, () => {
 	console.log(`App listening on port ${port}! 🔥`);
 	console.log(`Server is working on http://localhost:${port}`);
 });
+
+//this will work when circuit gets on
+io.on("connection", () => {
+	console.log("New Connection");
+});
