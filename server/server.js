@@ -1,4 +1,4 @@
-import {Server as socketIO} from "socket.io";
+import { Server as socketIO } from "socket.io";
 import dotenv from "dotenv";
 import http from "http";
 import app from "./app.js";
@@ -12,4 +12,5 @@ const io = new socketIO(server);
 
 server.listen(port, () => {
 	console.log(`App listening on port ${port}! 🔥`);
+	console.log(`Server is working on http://localhost:${port}`);
 });
