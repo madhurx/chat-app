@@ -1,15 +1,26 @@
+"use client";
+import { useEffect } from "react";
 import io from "socket.io-client";
 
-const ENDPOINT = "http://localhost:3000/";
-const socket = io.connect(ENDPOINT, { transports: ["polling", "websocket", "flashsocket"] });
+const ENDPOINT = "http://localhost:5000/";
+const socket = io(ENDPOINT, {
+	transports: ["websocket", "polling", "flashsocket"],
+});
 
 export default function Home() {
-	socket.on("connect", () => {
-		console.log("Connected to the server");
-	});
-	socket.on("connect_error", (err) => {
-		console.log(`connect_error due to ${err.message}`);
-	});
+	useEffect(() => {
+		socket.on("connect", (data) => {
+			"Received data from server:", data;
+		});
+
+		socket.on("connect_error", (err) => {
+			console.log(`Connect error due to ${err.message}`);
+		});
+
+		return () => {
+			socket.disconnect();
+		};
+	}, []);
 
 	return (
 		<div>
