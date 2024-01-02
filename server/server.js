@@ -22,35 +22,3 @@ server.listen(port, () => {
 	console.log(`App listening on port ${port}! 🔥`);
 	console.log(`Server is working on http://localhost:${port}`);
 });
-
-// server.js
-// import express from 'express';
-// import http from 'http';
-// import { Server as SocketIOServer } from 'socket.io';
-// import cors from 'cors';
-
-// const app = express();
-// const server = http.createServer(app);
-// const io = new SocketIOServer(server);
-
-// const PORT = process.env.PORT || 5000;
-
-// // Use the cors middleware
-// app.use(cors({ origin: 'http://localhost:3000' }));
-
-// // Set up Socket.IO connections
-// io.on('connect', (socket) => {
-//   console.log('A user connected');
-
-//   // Handle Socket.IO events here
-
-//   socket.on('disconnect', () => {
-//     console.log('A user disconnected');
-//   });
-// });
-
-// // Set up Express routes and middleware
-
-// server.listen(PORT, () => {
-//   console.log(`Server is running on http://localhost:${PORT}`);
-// });
