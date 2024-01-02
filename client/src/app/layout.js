@@ -2,7 +2,7 @@ import "./globals.css";
 
 export const metadata = {
 	title: "Chat App",
-	description: "Application for chatting",
+	description: "Application for chating",
 };
 
 export default function RootLayout({ children }) {
