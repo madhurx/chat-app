@@ -1,9 +1,10 @@
 "use client";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
 import SendIcon from "@mui/icons-material/Send";
 import Message from "../components/Message";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 const ENDPOINT = "http://localhost:5000/";
 
@@ -14,6 +15,7 @@ const page = () => {
 	const socket = io(ENDPOINT, {
 		transports: ["websocket", "polling", "flashsocket"],
 	});
+	const [messages, setMessages] = useState([]);
 
 	const sendMessage = () => {
 		const message = document.getElementById("chatInput").value;
@@ -32,7 +34,7 @@ const page = () => {
 	useEffect(() => {
 		//on for receiving data
 		socket.on("connect", () => {
-			alert("Connected");
+			console.log("Connected");
 			setId(socket.id);
 		});
 
@@ -48,15 +50,15 @@ const page = () => {
 		});
 
 		socket.on("welcome", (data) => {
-			alert(data.message);
+			setMessages([...messages, data]);
 		});
 
 		socket.on("userJoined", (data) => {
-			alert(data.message);
+			setMessages([...messages, data]);
 		});
 
 		socket.on("leave", (data) => {
-			alert(data.message);
+			setMessages([...messages, data]);
 		});
 
 		return () => {
@@ -67,18 +69,49 @@ const page = () => {
 
 	useEffect(() => {
 		socket.on("sendMessage", (data) => {
-			alert(data.message + "--" + data.user + "--" + data.id);
+			setMessages([...messages, data]);
+			console.log(data.message, data.user);
 		});
-		return () => {};
-	}, []);
+		return () => {
+			socket.off();
+		};
+	}, [messages]);
+
+	const messagesEndRef = useRef(null);
+	const scrollToBottom = () => {
+		messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+	};
+
+	useEffect(() => {
+		scrollToBottom();
+	}, [messages]);
 
 	return (
 		<div className="container w-full bg-gray-900 max-w-screen-2xl h-screen text-white">
 			<div className="grid h-screen items-center w-full">
 				<div className="flex flex-col border-white border col-span-full h-[50vh] mx-auto w-[50vw] items-center">
-					<div className="basis-2/12 overflow-hidden bg-cyan-400 text-white w-full"></div>
+					<div className="basis-2/12 overflow-hidden bg-cyan-700 text-white w-full">
+						<div className="block items-center h-full w-full px-4">
+							<h2 className="font-bold tracking-widest float-left items-center flex h-full">
+								Conversify
+							</h2>
+							<a
+								href="/"
+								className="float-right h-full flex items-center hover:scale-110 cursor-pointer">
+								<CloseRoundedIcon />
+							</a>
+						</div>
+					</div>
 					<div className="basis-8/12 overflow-y-scroll overflow-x-hidden w-full">
-						<Message />
+						{messages.map((data) => (
+							<Message
+								message={data.message}
+								sendBy={data.id === id ? "self" : "other"}
+								user={data.id === id ? null : data.user}
+							/>
+						))}
+
+						<div ref={messagesEndRef} className="clear-both" />
 					</div>
 					<div className="basis-2/12 overflow-hidden text-black w-full bg-gray-200">
 						<div className="w-full h-full px-3 flex">

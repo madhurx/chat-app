@@ -42,7 +42,8 @@ const Join = () => {
 				</div>
 
 				<div className="flex-auto py-2">
-					<Link href={{ pathname: `/chat`, query: { username: name } }}>
+					<Link
+						href={{ pathname: `/chat`, query: { username: name } }}>
 						<button
 							className=" bg-teal-500 py-2 px-5 rounded-lg hover:bg-teal-600 hover:scale-110"
 							onClick={(e) => sendName(e)}>
