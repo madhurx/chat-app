@@ -19,10 +19,12 @@ io.on("connect", (socket) => {
 	socket.on("joined", ({ username }) => {
 		users[socket.id] = username;
 		console.log(username + " has joined.");
+
 		socket.broadcast.emit("userJoined", {
 			user: "Admin",
 			message: `${users[socket.id]} has joined`,
 		});
+
 		socket.emit("welcome", {
 			user: "Admin",
 			message: `Welcome to the chat`,

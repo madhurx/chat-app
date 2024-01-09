@@ -5,26 +5,27 @@ import io from "socket.io-client";
 import SendIcon from "@mui/icons-material/Send";
 import Message from "../components/Message";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import dotenv from "dotenv";
 
-const ENDPOINT = "https://chat-app-backend-usjt.onrender.com/";
+dotenv.config();
+const ENDPOINT = process.env.ENDPOINT;
+let socket;
 
 const page = () => {
 	const searchParams = useSearchParams();
 	const username = searchParams.get("username");
 	const [id, setId] = useState("");
-	const socket = io(ENDPOINT, {
-		transports: ["websocket", "polling", "flashsocket"],
-	});
 	const [messages, setMessages] = useState([]);
 
 	const sendMessage = () => {
 		const message = document.getElementById("chatInput").value;
 		socket.emit("message", {
-			message,
 			id,
+			message,
 		});
 		document.getElementById("chatInput").value = "";
 	};
+
 	const handleKeyPress = (event) => {
 		if (event.key === "Enter") {
 			sendMessage();
@@ -32,6 +33,10 @@ const page = () => {
 	};
 
 	useEffect(() => {
+		socket = io(ENDPOINT, {
+			transports: ["websocket", "polling", "flashsocket"],
+		});
+
 		//on for receiving data
 		socket.on("connect", () => {
 			console.log("Connected");
@@ -42,8 +47,6 @@ const page = () => {
 			console.log(`Connect error due to ${err.message}`);
 		});
 
-		console.log(socket);
-
 		//emit for sending data
 		socket.emit("joined", {
 			username,
@@ -51,14 +54,17 @@ const page = () => {
 
 		socket.on("welcome", (data) => {
 			setMessages([...messages, data]);
+			console.log("11 effect");
 		});
 
 		socket.on("userJoined", (data) => {
 			setMessages([...messages, data]);
+			console.log("12 effect");
 		});
 
 		socket.on("leave", (data) => {
 			setMessages([...messages, data]);
+			console.log("13 effect");
 		});
 
 		return () => {
@@ -70,7 +76,6 @@ const page = () => {
 	useEffect(() => {
 		socket.on("sendMessage", (data) => {
 			setMessages([...messages, data]);
-			console.log(data.message, data.user);
 		});
 		return () => {
 			socket.off();
