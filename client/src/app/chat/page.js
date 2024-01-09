@@ -6,7 +6,7 @@ import SendIcon from "@mui/icons-material/Send";
 import Message from "../components/Message";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
-const ENDPOINT = "http://localhost:5000/";
+const ENDPOINT = "https://chat-app-backend-usjt.onrender.com/";
 
 const page = () => {
 	const searchParams = useSearchParams();
